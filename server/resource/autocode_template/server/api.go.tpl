@@ -28,9 +28,9 @@ var {{.Abbreviation}}Service = service.ServiceGroupApp.{{.PackageT}}ServiceGroup
 // @Param data body {{.Package}}.{{.StructName}} true "创建{{.Description}}"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /{{.Abbreviation}}/create{{.StructName}} [post]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Create{{.StructName}}(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Create{{.StructName}}(ctx context.Context, c *app.RequestContext) {
 	var {{.Abbreviation}} {{.Package}}.{{.StructName}}
-	err := c.ShouldBindJSON(&{{.Abbreviation}})
+	err := c.BindJSON(&{{.Abbreviation}})
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -56,7 +56,7 @@ func ({{.Abbreviation}}Api *{{.StructName}}Api) Create{{.StructName}}(c *gin.Con
 // @Param data body {{.Package}}.{{.StructName}} true "删除{{.Description}}"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /{{.Abbreviation}}/delete{{.StructName}} [delete]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}(ctx context.Context, c *app.RequestContext) {
 	{{.PrimaryField.FieldJson}} := c.Query("{{.PrimaryField.FieldJson}}")
 		{{- if .AutoCreateResource }}
     	userID := utils.GetUserID(c)
@@ -77,7 +77,7 @@ func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}(c *gin.Con
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
 // @Router /{{.Abbreviation}}/delete{{.StructName}}ByIds [delete]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}ByIds(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}ByIds(ctx context.Context, c *app.RequestContext) {
 	{{.PrimaryField.FieldJson}}s := c.QueryArray("{{.PrimaryField.FieldJson}}s[]")
     	{{- if .AutoCreateResource }}
     userID := utils.GetUserID(c)
@@ -99,9 +99,9 @@ func ({{.Abbreviation}}Api *{{.StructName}}Api) Delete{{.StructName}}ByIds(c *gi
 // @Param data body {{.Package}}.{{.StructName}} true "更新{{.Description}}"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /{{.Abbreviation}}/update{{.StructName}} [put]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Update{{.StructName}}(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Update{{.StructName}}(ctx context.Context, c *app.RequestContext) {
 	var {{.Abbreviation}} {{.Package}}.{{.StructName}}
-	err := c.ShouldBindJSON(&{{.Abbreviation}})
+	err := c.BindJSON(&{{.Abbreviation}})
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -127,7 +127,7 @@ func ({{.Abbreviation}}Api *{{.StructName}}Api) Update{{.StructName}}(c *gin.Con
 // @Param data query {{.Package}}.{{.StructName}} true "用id查询{{.Description}}"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /{{.Abbreviation}}/find{{.StructName}} [get]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Find{{.StructName}}(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Find{{.StructName}}(ctx context.Context, c *app.RequestContext) {
 	{{.PrimaryField.FieldJson}} := c.Query("{{.PrimaryField.FieldJson}}")
 	if re{{.Abbreviation}}, err := {{.Abbreviation}}Service.Get{{.StructName}}({{.PrimaryField.FieldJson}}); err != nil {
         global.GVA_LOG.Error("查询失败!", zap.Error(err))
@@ -146,9 +146,9 @@ func ({{.Abbreviation}}Api *{{.StructName}}Api) Find{{.StructName}}(c *gin.Conte
 // @Param data query {{.Package}}Req.{{.StructName}}Search true "分页获取{{.Description}}列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /{{.Abbreviation}}/get{{.StructName}}List [get]
-func ({{.Abbreviation}}Api *{{.StructName}}Api) Get{{.StructName}}List(c *gin.Context) {
+func ({{.Abbreviation}}Api *{{.StructName}}Api) Get{{.StructName}}List(ctx context.Context, c *app.RequestContext) {
 	var pageInfo {{.Package}}Req.{{.StructName}}Search
-	err := c.ShouldBindQuery(&pageInfo)
+	err := c.BindQuery(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

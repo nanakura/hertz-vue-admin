@@ -1,14 +1,14 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type AuthorityRouter struct{}
 
-func (s *AuthorityRouter) InitAuthorityRouter(Router *gin.RouterGroup) {
+func (s *AuthorityRouter) InitAuthorityRouter(Router *route.RouterGroup) {
 	authorityRouter := Router.Group("authority").Use(middleware.OperationRecord())
 	authorityRouterWithoutRecord := Router.Group("authority")
 	authorityApi := v1.ApiGroupApp.SystemApiGroup.AuthorityApi

@@ -1,13 +1,13 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
-	"github.com/gin-gonic/gin"
 )
 
 type JwtRouter struct{}
 
-func (s *JwtRouter) InitJwtRouter(Router *gin.RouterGroup) {
+func (s *JwtRouter) InitJwtRouter(Router *route.RouterGroup) {
 	jwtRouter := Router.Group("jwt")
 	jwtApi := v1.ApiGroupApp.SystemApiGroup.JwtApi
 	{

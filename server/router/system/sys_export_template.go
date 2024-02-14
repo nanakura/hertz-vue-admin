@@ -1,16 +1,16 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type SysExportTemplateRouter struct {
 }
 
 // InitSysExportTemplateRouter 初始化 导出模板 路由信息
-func (s *SysExportTemplateRouter) InitSysExportTemplateRouter(Router *gin.RouterGroup) {
+func (s *SysExportTemplateRouter) InitSysExportTemplateRouter(Router *route.RouterGroup) {
 	sysExportTemplateRouter := Router.Group("sysExportTemplate").Use(middleware.OperationRecord())
 	sysExportTemplateRouterWithoutRecord := Router.Group("sysExportTemplate")
 	var sysExportTemplateApi = v1.ApiGroupApp.SystemApiGroup.SysExportTemplateApi

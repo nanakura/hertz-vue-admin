@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"context"
 	"errors"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
@@ -18,8 +20,8 @@ import (
 
 var jwtService = service.ServiceGroupApp.SystemServiceGroup.JwtService
 
-func JWTAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
+func JWTAuth() app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
 		// 我们这里jwt鉴权取头部信息 x-token 登录时回返回token信息 这里前端需要把token存储到cookie或者本地localStorage中 不过需要跟后端协商过期时间 可以约定刷新令牌或者重新登录
 		token := utils.GetToken(c)
 		if token == "" {
@@ -58,7 +60,7 @@ func JWTAuth() gin.HandlerFunc {
 		//	c.Abort()
 		//}
 		c.Set("claims", claims)
-		c.Next()
+		c.Next(ctx)
 		if claims.ExpiresAt.Unix()-time.Now().Unix() < claims.BufferTime {
 			dr, _ := utils.ParseDuration(global.GVA_CONFIG.JWT.ExpiresTime)
 			claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(dr))

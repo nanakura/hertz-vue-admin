@@ -106,6 +106,30 @@ definitions:
         description: 防爆破验证码超时时间，单位：s(秒)
         type: integer
     type: object
+  config.Email:
+    properties:
+      from:
+        description: 发件人  你自己要发邮件的邮箱
+        type: string
+      host:
+        description: 服务器地址 例如 smtp.qq.com  请前往QQ或者你要发邮件的邮箱查看其smtp协议
+        type: string
+      is-ssl:
+        description: 是否SSL   是否开启SSL
+        type: boolean
+      nickname:
+        description: 昵称    发件人昵称 通常为自己的邮箱
+        type: string
+      port:
+        description: 端口     请前往QQ或者你要发邮件的邮箱查看其smtp协议 大多为 465
+        type: integer
+      secret:
+        description: 密钥    用于登录的密钥 最好不要用邮箱密码 去邮箱smtp申请一个用于登录的密钥
+        type: string
+      to:
+        description: 收件人:多个以英文逗号分隔 例：a@qq.com b@qq.com 正式开发中请把此项目作为参数使用
+        type: string
+    type: object
   config.Excel:
     properties:
       dir:
@@ -150,6 +174,9 @@ definitions:
     type: object
   config.Mongo:
     properties:
+      auth-source:
+        description: 验证数据库
+        type: string
       coll:
         description: collection name
         type: string
@@ -396,23 +423,21 @@ definitions:
       aliyun-oss:
         $ref: '#/definitions/config.AliyunOSS'
       autocode:
-        allOf:
-        - $ref: '#/definitions/config.Autocode'
+        $ref: '#/definitions/config.Autocode'
         description: auto
       aws-s3:
         $ref: '#/definitions/config.AwsS3'
       captcha:
         $ref: '#/definitions/config.Captcha'
       cors:
-        allOf:
-        - $ref: '#/definitions/config.CORS'
+        $ref: '#/definitions/config.CORS'
         description: 跨域配置
       db-list:
         items:
           $ref: '#/definitions/config.SpecializedDB'
         type: array
       email:
-        $ref: '#/definitions/github_com_flipped-aurora_gin-vue-admin_server_config.Email'
+        $ref: '#/definitions/config.Email'
       excel:
         $ref: '#/definitions/config.Excel'
       hua-wei-obs:
@@ -420,16 +445,14 @@ definitions:
       jwt:
         $ref: '#/definitions/config.JWT'
       local:
-        allOf:
-        - $ref: '#/definitions/config.Local'
+        $ref: '#/definitions/config.Local'
         description: oss
       mongo:
         $ref: '#/definitions/config.Mongo'
       mssql:
         $ref: '#/definitions/config.Mssql'
       mysql:
-        allOf:
-        - $ref: '#/definitions/config.Mysql'
+        $ref: '#/definitions/config.Mysql'
         description: gorm
       oracle:
         $ref: '#/definitions/config.Oracle'
@@ -555,7 +578,7 @@ definitions:
       router-prefix:
         type: string
       use-mongo:
-        description: 使用redis
+        description: 使用mongo
         type: boolean
       use-multipoint:
         description: 多点登录拦截
@@ -624,8 +647,7 @@ definitions:
         description: 客户手机号
         type: string
       sysUser:
-        allOf:
-        - $ref: '#/definitions/system.SysUser'
+        $ref: '#/definitions/system.SysUser'
         description: 管理详情
       sysUserAuthorityID:
         description: 管理角色ID
@@ -703,30 +725,6 @@ definitions:
         type: string
       url:
         description: 文件地址
-        type: string
-    type: object
-  github_com_flipped-aurora_gin-vue-admin_server_config.Email:
-    properties:
-      from:
-        description: 发件人  你自己要发邮件的邮箱
-        type: string
-      host:
-        description: 服务器地址 例如 smtp.qq.com  请前往QQ或者你要发邮件的邮箱查看其smtp协议
-        type: string
-      is-ssl:
-        description: 是否SSL   是否开启SSL
-        type: boolean
-      nickname:
-        description: 昵称    发件人昵称 通常为自己的邮箱
-        type: string
-      port:
-        description: 端口     请前往QQ或者你要发邮件的邮箱查看其smtp协议 大多为 465
-        type: integer
-      secret:
-        description: 密钥    用于登录的密钥 最好不要用邮箱密码 去邮箱smtp申请一个用于登录的密钥
-        type: string
-      to:
-        description: 收件人:多个以英文逗号分隔 例：a@qq.com b@qq.com 正式开发中请把此项目作为参数使用
         type: string
     type: object
   request.AddMenuAuthorityInfo:
@@ -1120,7 +1118,8 @@ definitions:
         items:
           $ref: '#/definitions/system.Field'
         type: array
-      hasTimer:
+      gvaModel:
+        description: 是否使用gva默认Model
         type: boolean
       humpPackageName:
         description: go文件名称
@@ -1130,6 +1129,8 @@ definitions:
       packageName:
         description: 文件名称
         type: string
+      primaryField:
+        $ref: '#/definitions/system.Field'
       structName:
         description: Struct名称
         type: string
@@ -1172,32 +1173,15 @@ definitions:
       fieldType:
         description: Field数据类型
         type: string
+      primaryKey:
+        description: 是否主键
+        type: boolean
       require:
         description: 是否必填
         type: boolean
       sort:
         description: 是否增加排序
         type: boolean
-    type: object
-  system.Meta:
-    properties:
-      activeName:
-        type: string
-      closeTab:
-        description: 自动关闭tab
-        type: boolean
-      defaultMenu:
-        description: 是否是基础路由（开发中）
-        type: boolean
-      icon:
-        description: 菜单图标
-        type: string
-      keepAlive:
-        description: 是否缓存
-        type: boolean
-      title:
-        description: 菜单名
-        type: string
     type: object
   system.SysApi:
     properties:
@@ -1281,6 +1265,8 @@ definitions:
       ID:
         description: 主键ID
         type: integer
+      activeName:
+        type: string
       authoritys:
         items:
           $ref: '#/definitions/system.SysAuthority'
@@ -1289,23 +1275,31 @@ definitions:
         items:
           $ref: '#/definitions/system.SysBaseMenu'
         type: array
+      closeTab:
+        description: 自动关闭tab
+        type: boolean
       component:
         description: 对应前端文件路径
         type: string
       createdAt:
         description: 创建时间
         type: string
+      defaultMenu:
+        description: 是否是基础路由（开发中）
+        type: boolean
       hidden:
         description: 是否在列表隐藏
+        type: boolean
+      icon:
+        description: 菜单图标
+        type: string
+      keepAlive:
+        description: 是否缓存
         type: boolean
       menuBtn:
         items:
           $ref: '#/definitions/system.SysBaseMenuBtn'
         type: array
-      meta:
-        allOf:
-        - $ref: '#/definitions/system.Meta'
-        description: 附加属性
       name:
         description: 路由name
         type: string
@@ -1322,6 +1316,9 @@ definitions:
       sort:
         description: 排序标记
         type: integer
+      title:
+        description: 菜单名
+        type: string
       updatedAt:
         description: 更新时间
         type: string
@@ -1425,11 +1422,37 @@ definitions:
         description: 字典值
         type: integer
     type: object
+  system.SysExportTemplate:
+    properties:
+      ID:
+        description: 主键ID
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      name:
+        description: 模板名称
+        type: string
+      tableName:
+        description: 表名称
+        type: string
+      templateID:
+        description: 模板标识
+        type: string
+      templateInfo:
+        description: 模板信息
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
   system.SysMenu:
     properties:
       ID:
         description: 主键ID
         type: integer
+      activeName:
+        type: string
       authoritys:
         items:
           $ref: '#/definitions/system.SysAuthority'
@@ -1442,14 +1465,26 @@ definitions:
         items:
           $ref: '#/definitions/system.SysMenu'
         type: array
+      closeTab:
+        description: 自动关闭tab
+        type: boolean
       component:
         description: 对应前端文件路径
         type: string
       createdAt:
         description: 创建时间
         type: string
+      defaultMenu:
+        description: 是否是基础路由（开发中）
+        type: boolean
       hidden:
         description: 是否在列表隐藏
+        type: boolean
+      icon:
+        description: 菜单图标
+        type: string
+      keepAlive:
+        description: 是否缓存
         type: boolean
       menuBtn:
         items:
@@ -1457,10 +1492,6 @@ definitions:
         type: array
       menuId:
         type: string
-      meta:
-        allOf:
-        - $ref: '#/definitions/system.Meta'
-        description: 附加属性
       name:
         description: 路由name
         type: string
@@ -1477,6 +1508,9 @@ definitions:
       sort:
         description: 排序标记
         type: integer
+      title:
+        description: 菜单名
+        type: string
       updatedAt:
         description: 更新时间
         type: string
@@ -3656,6 +3690,230 @@ paths:
       summary: 更新SysDictionaryDetail
       tags:
       - SysDictionaryDetail
+  /sysExportTemplate/createSysExportTemplate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/deleteSysExportTemplate:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/deleteSysExportTemplateByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/exportExcel:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 导出表格模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/findSysExportTemplate:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 模板名称
+        in: query
+        name: name
+        type: string
+      - description: 表名称
+        in: query
+        name: tableName
+        type: string
+      - description: 模板标识
+        in: query
+        name: templateID
+        type: string
+      - description: 模板信息
+        in: query
+        name: templateInfo
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/getSysExportTemplateList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 模板名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 表名称
+        in: query
+        name: tableName
+        type: string
+      - description: 模板标识
+        in: query
+        name: templateID
+        type: string
+      - description: 模板信息
+        in: query
+        name: templateInfo
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取导出模板列表
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/importExcel:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 导入表格
+      tags:
+      - SysImportTemplate
+  /sysExportTemplate/updateSysExportTemplate:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新导出模板
+      tags:
+      - SysExportTemplate
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:

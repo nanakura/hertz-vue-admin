@@ -1,7 +1,9 @@
 package example
 
 import (
+	"context"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app"
 	"io"
 	"mime/multipart"
 	"strconv"
@@ -12,7 +14,6 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	exampleRes "github.com/flipped-aurora/gin-vue-admin/server/model/example/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -25,13 +26,13 @@ import (
 // @Param     file  formData  file                           true  "an example for breakpoint resume, 断点续传示例"
 // @Success   200   {object}  response.Response{msg=string}  "断点续传到服务器"
 // @Router    /fileUploadAndDownload/breakpointContinue [post]
-func (b *FileUploadAndDownloadApi) BreakpointContinue(c *gin.Context) {
-	fileMd5 := c.Request.FormValue("fileMd5")
-	fileName := c.Request.FormValue("fileName")
-	chunkMd5 := c.Request.FormValue("chunkMd5")
-	chunkNumber, _ := strconv.Atoi(c.Request.FormValue("chunkNumber"))
-	chunkTotal, _ := strconv.Atoi(c.Request.FormValue("chunkTotal"))
-	_, FileHeader, err := c.Request.FormFile("file")
+func (b *FileUploadAndDownloadApi) BreakpointContinue(ctx context.Context, c *app.RequestContext) {
+	fileMd5 := string(c.FormValue("fileMd5"))
+	fileName := string(c.FormValue("fileName"))
+	chunkMd5 := string(c.FormValue("chunkMd5"))
+	chunkNumber, _ := strconv.Atoi(string(c.FormValue("chunkNumber")))
+	chunkTotal, _ := strconv.Atoi(string(c.FormValue("chunkTotal")))
+	FileHeader, err := c.FormFile("file")
 	if err != nil {
 		global.GVA_LOG.Error("接收文件失败!", zap.Error(err))
 		response.FailWithMessage("接收文件失败", c)
@@ -85,7 +86,7 @@ func (b *FileUploadAndDownloadApi) BreakpointContinue(c *gin.Context) {
 // @Param     file  formData  file                                                        true  "Find the file, 查找文件"
 // @Success   200   {object}  response.Response{data=exampleRes.FileResponse,msg=string}  "查找文件,返回包括文件详情"
 // @Router    /fileUploadAndDownload/findFile [post]
-func (b *FileUploadAndDownloadApi) FindFile(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) FindFile(ctx context.Context, c *app.RequestContext) {
 	fileMd5 := c.Query("fileMd5")
 	fileName := c.Query("fileName")
 	chunkTotal, _ := strconv.Atoi(c.Query("chunkTotal"))
@@ -107,7 +108,7 @@ func (b *FileUploadAndDownloadApi) FindFile(c *gin.Context) {
 // @Param     file  formData  file                                                            true  "上传文件完成"
 // @Success   200   {object}  response.Response{data=exampleRes.FilePathResponse,msg=string}  "创建文件,返回包括文件路径"
 // @Router    /fileUploadAndDownload/findFile [post]
-func (b *FileUploadAndDownloadApi) BreakpointContinueFinish(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) BreakpointContinueFinish(ctx context.Context, c *app.RequestContext) {
 	fileMd5 := c.Query("fileMd5")
 	fileName := c.Query("fileName")
 	filePath, err := utils.MakeFile(fileName, fileMd5)
@@ -128,9 +129,9 @@ func (b *FileUploadAndDownloadApi) BreakpointContinueFinish(c *gin.Context) {
 // @Param     file  formData  file                           true  "删除缓存切片"
 // @Success   200   {object}  response.Response{msg=string}  "删除切片"
 // @Router    /fileUploadAndDownload/removeChunk [post]
-func (b *FileUploadAndDownloadApi) RemoveChunk(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) RemoveChunk(ctx context.Context, c *app.RequestContext) {
 	var file example.ExaFile
-	err := c.ShouldBindJSON(&file)
+	err := c.BindJSON(&file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

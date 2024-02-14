@@ -1,14 +1,14 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type DictionaryRouter struct{}
 
-func (s *DictionaryRouter) InitSysDictionaryRouter(Router *gin.RouterGroup) {
+func (s *DictionaryRouter) InitSysDictionaryRouter(Router *route.RouterGroup) {
 	sysDictionaryRouter := Router.Group("sysDictionary").Use(middleware.OperationRecord())
 	sysDictionaryRouterWithoutRecord := Router.Group("sysDictionary")
 	sysDictionaryApi := v1.ApiGroupApp.SystemApiGroup.DictionaryApi

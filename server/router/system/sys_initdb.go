@@ -1,13 +1,13 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
-	"github.com/gin-gonic/gin"
 )
 
 type InitRouter struct{}
 
-func (s *InitRouter) InitInitRouter(Router *gin.RouterGroup) {
+func (s *InitRouter) InitInitRouter(Router *route.RouterGroup) {
 	initRouter := Router.Group("init")
 	dbApi := v1.ApiGroupApp.SystemApiGroup.DBApi
 	{

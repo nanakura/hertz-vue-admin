@@ -1,6 +1,8 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -9,7 +11,6 @@ import (
 	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -24,9 +25,9 @@ type SystemApiApi struct{}
 // @Param     data  body      system.SysApi                  true  "api路径, api中文描述, api组, 方法"
 // @Success   200   {object}  response.Response{msg=string}  "创建基础api"
 // @Router    /api/createApi [post]
-func (s *SystemApiApi) CreateApi(c *gin.Context) {
+func (s *SystemApiApi) CreateApi(ctx context.Context, c *app.RequestContext) {
 	var api system.SysApi
-	err := c.ShouldBindJSON(&api)
+	err := c.BindJSON(&api)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -54,9 +55,9 @@ func (s *SystemApiApi) CreateApi(c *gin.Context) {
 // @Param     data  body      system.SysApi                  true  "ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除api"
 // @Router    /api/deleteApi [post]
-func (s *SystemApiApi) DeleteApi(c *gin.Context) {
+func (s *SystemApiApi) DeleteApi(ctx context.Context, c *app.RequestContext) {
 	var api system.SysApi
-	err := c.ShouldBindJSON(&api)
+	err := c.BindJSON(&api)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -84,9 +85,9 @@ func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 // @Param     data  body      systemReq.SearchApiParams                               true  "分页获取API列表"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取API列表,返回包括列表,总数,页码,每页数量"
 // @Router    /api/getApiList [post]
-func (s *SystemApiApi) GetApiList(c *gin.Context) {
+func (s *SystemApiApi) GetApiList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo systemReq.SearchApiParams
-	err := c.ShouldBindJSON(&pageInfo)
+	err := c.BindJSON(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -119,9 +120,9 @@ func (s *SystemApiApi) GetApiList(c *gin.Context) {
 // @Param     data  body      request.GetById                                   true  "根据id获取api"
 // @Success   200   {object}  response.Response{data=systemRes.SysAPIResponse}  "根据id获取api,返回包括api详情"
 // @Router    /api/getApiById [post]
-func (s *SystemApiApi) GetApiById(c *gin.Context) {
+func (s *SystemApiApi) GetApiById(ctx context.Context, c *app.RequestContext) {
 	var idInfo request.GetById
-	err := c.ShouldBindJSON(&idInfo)
+	err := c.BindJSON(&idInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -149,9 +150,9 @@ func (s *SystemApiApi) GetApiById(c *gin.Context) {
 // @Param     data  body      system.SysApi                  true  "api路径, api中文描述, api组, 方法"
 // @Success   200   {object}  response.Response{msg=string}  "修改基础api"
 // @Router    /api/updateApi [post]
-func (s *SystemApiApi) UpdateApi(c *gin.Context) {
+func (s *SystemApiApi) UpdateApi(ctx context.Context, c *app.RequestContext) {
 	var api system.SysApi
-	err := c.ShouldBindJSON(&api)
+	err := c.BindJSON(&api)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -178,7 +179,7 @@ func (s *SystemApiApi) UpdateApi(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=systemRes.SysAPIListResponse,msg=string}  "获取所有的Api 不分页,返回包括api列表"
 // @Router    /api/getAllApis [post]
-func (s *SystemApiApi) GetAllApis(c *gin.Context) {
+func (s *SystemApiApi) GetAllApis(ctx context.Context, c *app.RequestContext) {
 	apis, err := apiService.GetAllApis()
 	if err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
@@ -197,9 +198,9 @@ func (s *SystemApiApi) GetAllApis(c *gin.Context) {
 // @Param     data  body      request.IdsReq                 true  "ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除选中Api"
 // @Router    /api/deleteApisByIds [delete]
-func (s *SystemApiApi) DeleteApisByIds(c *gin.Context) {
+func (s *SystemApiApi) DeleteApisByIds(ctx context.Context, c *app.RequestContext) {
 	var ids request.IdsReq
-	err := c.ShouldBindJSON(&ids)
+	err := c.BindJSON(&ids)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -220,7 +221,7 @@ func (s *SystemApiApi) DeleteApisByIds(c *gin.Context) {
 // @Produce   application/json
 // @Success   200   {object}  response.Response{msg=string}  "刷新成功"
 // @Router    /api/freshCasbin [get]
-func (s *SystemApiApi) FreshCasbin(c *gin.Context) {
+func (s *SystemApiApi) FreshCasbin(ctx context.Context, c *app.RequestContext) {
 	err := casbinService.FreshCasbin()
 	if err != nil {
 		global.GVA_LOG.Error("刷新失败!", zap.Error(err))

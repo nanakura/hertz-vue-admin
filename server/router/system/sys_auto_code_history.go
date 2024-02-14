@@ -1,13 +1,13 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
-	"github.com/gin-gonic/gin"
 )
 
 type AutoCodeHistoryRouter struct{}
 
-func (s *AutoCodeRouter) InitAutoCodeHistoryRouter(Router *gin.RouterGroup) {
+func (s *AutoCodeRouter) InitAutoCodeHistoryRouter(Router *route.RouterGroup) {
 	autoCodeHistoryRouter := Router.Group("autoCode")
 	autoCodeHistoryApi := v1.ApiGroupApp.SystemApiGroup.AutoCodeHistoryApi
 	{

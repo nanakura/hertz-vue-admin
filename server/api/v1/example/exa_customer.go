@@ -1,13 +1,14 @@
 package example
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	exampleRes "github.com/flipped-aurora/gin-vue-admin/server/model/example/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -22,9 +23,9 @@ type CustomerApi struct{}
 // @Param     data  body      example.ExaCustomer            true  "客户用户名, 客户手机号码"
 // @Success   200   {object}  response.Response{msg=string}  "创建客户"
 // @Router    /customer/customer [post]
-func (e *CustomerApi) CreateExaCustomer(c *gin.Context) {
+func (e *CustomerApi) CreateExaCustomer(ctx context.Context, c *app.RequestContext) {
 	var customer example.ExaCustomer
-	err := c.ShouldBindJSON(&customer)
+	err := c.BindJSON(&customer)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -54,9 +55,9 @@ func (e *CustomerApi) CreateExaCustomer(c *gin.Context) {
 // @Param     data  body      example.ExaCustomer            true  "客户ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除客户"
 // @Router    /customer/customer [delete]
-func (e *CustomerApi) DeleteExaCustomer(c *gin.Context) {
+func (e *CustomerApi) DeleteExaCustomer(ctx context.Context, c *app.RequestContext) {
 	var customer example.ExaCustomer
-	err := c.ShouldBindJSON(&customer)
+	err := c.BindJSON(&customer)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -84,9 +85,9 @@ func (e *CustomerApi) DeleteExaCustomer(c *gin.Context) {
 // @Param     data  body      example.ExaCustomer            true  "客户ID, 客户信息"
 // @Success   200   {object}  response.Response{msg=string}  "更新客户信息"
 // @Router    /customer/customer [put]
-func (e *CustomerApi) UpdateExaCustomer(c *gin.Context) {
+func (e *CustomerApi) UpdateExaCustomer(ctx context.Context, c *app.RequestContext) {
 	var customer example.ExaCustomer
-	err := c.ShouldBindJSON(&customer)
+	err := c.BindJSON(&customer)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -119,9 +120,9 @@ func (e *CustomerApi) UpdateExaCustomer(c *gin.Context) {
 // @Param     data  query     example.ExaCustomer                                                true  "客户ID"
 // @Success   200   {object}  response.Response{data=exampleRes.ExaCustomerResponse,msg=string}  "获取单一客户信息,返回包括客户详情"
 // @Router    /customer/customer [get]
-func (e *CustomerApi) GetExaCustomer(c *gin.Context) {
+func (e *CustomerApi) GetExaCustomer(ctx context.Context, c *app.RequestContext) {
 	var customer example.ExaCustomer
-	err := c.ShouldBindQuery(&customer)
+	err := c.BindQuery(&customer)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -149,9 +150,9 @@ func (e *CustomerApi) GetExaCustomer(c *gin.Context) {
 // @Param     data  query     request.PageInfo                                        true  "页码, 每页大小"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取权限客户列表,返回包括列表,总数,页码,每页数量"
 // @Router    /customer/customerList [get]
-func (e *CustomerApi) GetExaCustomerList(c *gin.Context) {
+func (e *CustomerApi) GetExaCustomerList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo request.PageInfo
-	err := c.ShouldBindQuery(&pageInfo)
+	err := c.BindQuery(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

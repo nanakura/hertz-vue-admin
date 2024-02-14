@@ -1,10 +1,11 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -19,9 +20,9 @@ type AuthorityBtnApi struct{}
 // @Param     data  body      request.SysAuthorityBtnReq                                      true  "菜单id, 角色id, 选中的按钮id"
 // @Success   200   {object}  response.Response{data=response.SysAuthorityBtnRes,msg=string}  "返回列表成功"
 // @Router    /authorityBtn/getAuthorityBtn [post]
-func (a *AuthorityBtnApi) GetAuthorityBtn(c *gin.Context) {
+func (a *AuthorityBtnApi) GetAuthorityBtn(ctx context.Context, c *app.RequestContext) {
 	var req request.SysAuthorityBtnReq
-	err := c.ShouldBindJSON(&req)
+	err := c.BindJSON(&req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -44,9 +45,9 @@ func (a *AuthorityBtnApi) GetAuthorityBtn(c *gin.Context) {
 // @Param     data  body      request.SysAuthorityBtnReq     true  "菜单id, 角色id, 选中的按钮id"
 // @Success   200   {object}  response.Response{msg=string}  "返回列表成功"
 // @Router    /authorityBtn/setAuthorityBtn [post]
-func (a *AuthorityBtnApi) SetAuthorityBtn(c *gin.Context) {
+func (a *AuthorityBtnApi) SetAuthorityBtn(ctx context.Context, c *app.RequestContext) {
 	var req request.SysAuthorityBtnReq
-	err := c.ShouldBindJSON(&req)
+	err := c.BindJSON(&req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -68,7 +69,7 @@ func (a *AuthorityBtnApi) SetAuthorityBtn(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{msg=string}  "删除成功"
 // @Router    /authorityBtn/canRemoveAuthorityBtn [post]
-func (a *AuthorityBtnApi) CanRemoveAuthorityBtn(c *gin.Context) {
+func (a *AuthorityBtnApi) CanRemoveAuthorityBtn(ctx context.Context, c *app.RequestContext) {
 	id := c.Query("id")
 	err := authorityBtnService.CanRemoveAuthorityBtn(id)
 	if err != nil {

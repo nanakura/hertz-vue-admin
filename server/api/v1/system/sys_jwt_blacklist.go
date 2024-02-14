@@ -1,11 +1,12 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -19,7 +20,7 @@ type JwtApi struct{}
 // @Produce   application/json
 // @Success   200  {object}  response.Response{msg=string}  "jwt加入黑名单"
 // @Router    /jwt/jsonInBlacklist [post]
-func (j *JwtApi) JsonInBlacklist(c *gin.Context) {
+func (j *JwtApi) JsonInBlacklist(ctx context.Context, c *app.RequestContext) {
 	token := utils.GetToken(c)
 	jwt := system.JwtBlacklist{Jwt: token}
 	err := jwtService.JsonInBlacklist(jwt)

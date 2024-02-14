@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"strconv"
 	"strings"
 
@@ -14,12 +16,12 @@ import (
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
 
 // CasbinHandler 拦截器
-func CasbinHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
+func CasbinHandler() app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
 		if global.GVA_CONFIG.System.Env != "develop" {
 			waitUse, _ := utils.GetClaims(c)
 			//获取请求的PATH
-			path := c.Request.URL.Path
+			path := string(c.Request.Path())
 			obj := strings.TrimPrefix(path, global.GVA_CONFIG.System.RouterPrefix)
 			// 获取请求方法
 			act := c.Request.Method
@@ -33,6 +35,6 @@ func CasbinHandler() gin.HandlerFunc {
 				return
 			}
 		}
-		c.Next()
+		c.Next(ctx)
 	}
 }

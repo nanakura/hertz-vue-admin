@@ -1,14 +1,14 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type UserRouter struct{}
 
-func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
+func (s *UserRouter) InitUserRouter(Router *route.RouterGroup) {
 	userRouter := Router.Group("user").Use(middleware.OperationRecord())
 	userRouterWithoutRecord := Router.Group("user")
 	baseApi := v1.ApiGroupApp.SystemApiGroup.BaseApi

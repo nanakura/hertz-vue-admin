@@ -1,40 +1,41 @@
 package utils
 
 import (
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/protocol"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
-	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid/v5"
 	"net"
 )
 
-func ClearToken(c *gin.Context) {
+func ClearToken(c *app.RequestContext) {
 	// 增加cookie x-token 向来源的web添加
-	host, _, err := net.SplitHostPort(c.Request.Host)
+	host, _, err := net.SplitHostPort(string(c.Request.Host()))
 	if err != nil {
-		host = c.Request.Host
+		host = string(c.Request.Host())
 	}
-	c.SetCookie("x-token", "", -1, "/", host, true, false)
+	c.SetCookie("x-token", "", -1, "/", host, protocol.CookieSameSiteLaxMode, true, false)
 }
 
-func SetToken(c *gin.Context, token string, maxAge int) {
+func SetToken(c *app.RequestContext, token string, maxAge int) {
 	// 增加cookie x-token 向来源的web添加
-	host, _, err := net.SplitHostPort(c.Request.Host)
+	host, _, err := net.SplitHostPort(string(c.Request.Host()))
 	if err != nil {
-		host = c.Request.Host
+		host = string(c.Request.Host())
 	}
-	c.SetCookie("x-token", token, maxAge, "/", host, true, false)
+	c.SetCookie("x-token", token, maxAge, "/", host, protocol.CookieSameSiteLaxMode, true, false)
 }
 
-func GetToken(c *gin.Context) string {
-	token, _ := c.Cookie("x-token")
+func GetToken(c *app.RequestContext) string {
+	token := string(c.Cookie("x-token"))
 	if token == "" {
 		token = c.Request.Header.Get("x-token")
 	}
 	return token
 }
 
-func GetClaims(c *gin.Context) (*systemReq.CustomClaims, error) {
+func GetClaims(c *app.RequestContext) (*systemReq.CustomClaims, error) {
 	token := GetToken(c)
 	j := NewJWT()
 	claims, err := j.ParseToken(token)
@@ -45,7 +46,7 @@ func GetClaims(c *gin.Context) (*systemReq.CustomClaims, error) {
 }
 
 // GetUserID 从Gin的Context中获取从jwt解析出来的用户ID
-func GetUserID(c *gin.Context) uint {
+func GetUserID(c *app.RequestContext) uint {
 	if claims, exists := c.Get("claims"); !exists {
 		if cl, err := GetClaims(c); err != nil {
 			return 0
@@ -59,7 +60,7 @@ func GetUserID(c *gin.Context) uint {
 }
 
 // GetUserUuid 从Gin的Context中获取从jwt解析出来的用户UUID
-func GetUserUuid(c *gin.Context) uuid.UUID {
+func GetUserUuid(c *app.RequestContext) uuid.UUID {
 	if claims, exists := c.Get("claims"); !exists {
 		if cl, err := GetClaims(c); err != nil {
 			return uuid.UUID{}
@@ -73,7 +74,7 @@ func GetUserUuid(c *gin.Context) uuid.UUID {
 }
 
 // GetUserAuthorityId 从Gin的Context中获取从jwt解析出来的用户角色id
-func GetUserAuthorityId(c *gin.Context) uint {
+func GetUserAuthorityId(c *app.RequestContext) uint {
 	if claims, exists := c.Get("claims"); !exists {
 		if cl, err := GetClaims(c); err != nil {
 			return 0
@@ -87,7 +88,7 @@ func GetUserAuthorityId(c *gin.Context) uint {
 }
 
 // GetUserInfo 从Gin的Context中获取从jwt解析出来的用户角色id
-func GetUserInfo(c *gin.Context) *systemReq.CustomClaims {
+func GetUserInfo(c *app.RequestContext) *systemReq.CustomClaims {
 	if claims, exists := c.Get("claims"); !exists {
 		if cl, err := GetClaims(c); err != nil {
 			return nil
@@ -101,7 +102,7 @@ func GetUserInfo(c *gin.Context) *systemReq.CustomClaims {
 }
 
 // GetUserName 从Gin的Context中获取从jwt解析出来的用户名
-func GetUserName(c *gin.Context) string {
+func GetUserName(c *app.RequestContext) string {
 	if claims, exists := c.Get("claims"); !exists {
 		if cl, err := GetClaims(c); err != nil {
 			return ""

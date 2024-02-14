@@ -1,14 +1,14 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type SysRouter struct{}
 
-func (s *SysRouter) InitSystemRouter(Router *gin.RouterGroup) {
+func (s *SysRouter) InitSystemRouter(Router *route.RouterGroup) {
 	sysRouter := Router.Group("system").Use(middleware.OperationRecord())
 	systemApi := v1.ApiGroupApp.SystemApiGroup.SystemApi
 	{

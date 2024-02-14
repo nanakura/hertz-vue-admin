@@ -16,10 +16,10 @@ type {{ .PlugName}}Api struct{}
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"发送成功"}"
 // @Router /{{ .RouterGroup}}/routerName [post]
-func (p *{{ .PlugName}}Api) ApiName(c *gin.Context) {
+func (p *{{ .PlugName}}Api) ApiName(ctx context.Context, c *app.RequestContext) {
     {{ if .HasRequest}}
         var plug model.Request
-        _ = c.ShouldBindJSON(&plug)
+        _ = c.BindJSON(&plug)
     {{ end }}
         if {{ if .HasResponse }} res, {{ end }} err:= service.ServiceGroupApp.PlugService({{ if .HasRequest }}plug{{ end -}}); err != nil {
 		global.GVA_LOG.Error("失败!", zap.Error(err))

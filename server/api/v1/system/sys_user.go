@@ -1,6 +1,8 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"strconv"
 	"time"
 
@@ -24,9 +26,9 @@ import (
 // @Param    data  body      systemReq.Login                                             true  "用户名, 密码, 验证码"
 // @Success  200   {object}  response.Response{data=systemRes.LoginResponse,msg=string}  "返回包括用户信息,token,过期时间"
 // @Router   /base/login [post]
-func (b *BaseApi) Login(c *gin.Context) {
+func (b *BaseApi) Login(ctx context.Context, c *app.RequestContext) {
 	var l systemReq.Login
-	err := c.ShouldBindJSON(&l)
+	err := c.BindJSON(&l)
 	key := c.ClientIP()
 
 	if err != nil {
@@ -66,7 +68,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 			response.FailWithMessage("用户被禁止登录", c)
 			return
 		}
-		b.TokenNext(c, *user)
+		b.TokenNext(ctx, c, *user)
 		return
 	}
 	// 验证码次数+1
@@ -75,7 +77,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 }
 
 // TokenNext 登录以后签发jwt
-func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
+func (b *BaseApi) TokenNext(ctx context.Context, c *app.RequestContext, user system.SysUser) {
 	j := &utils.JWT{SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey)} // 唯一签名
 	claims := j.CreateClaims(systemReq.BaseClaims{
 		UUID:        user.UUID,
@@ -142,9 +144,9 @@ func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
 // @Param    data  body      systemReq.Register                                            true  "用户名, 昵称, 密码, 角色ID"
 // @Success  200   {object}  response.Response{data=systemRes.SysUserResponse,msg=string}  "用户注册账号,返回包括用户信息"
 // @Router   /user/admin_register [post]
-func (b *BaseApi) Register(c *gin.Context) {
+func (b *BaseApi) Register(ctx context.Context, c *app.RequestContext) {
 	var r systemReq.Register
-	err := c.ShouldBindJSON(&r)
+	err := c.BindJSON(&r)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -178,9 +180,9 @@ func (b *BaseApi) Register(c *gin.Context) {
 // @Param     data  body      systemReq.ChangePasswordReq    true  "用户名, 原密码, 新密码"
 // @Success   200   {object}  response.Response{msg=string}  "用户修改密码"
 // @Router    /user/changePassword [post]
-func (b *BaseApi) ChangePassword(c *gin.Context) {
+func (b *BaseApi) ChangePassword(ctx context.Context, c *app.RequestContext) {
 	var req systemReq.ChangePasswordReq
-	err := c.ShouldBindJSON(&req)
+	err := c.BindJSON(&req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -210,9 +212,9 @@ func (b *BaseApi) ChangePassword(c *gin.Context) {
 // @Param     data  body      request.PageInfo                                        true  "页码, 每页大小"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取用户列表,返回包括列表,总数,页码,每页数量"
 // @Router    /user/getUserList [post]
-func (b *BaseApi) GetUserList(c *gin.Context) {
+func (b *BaseApi) GetUserList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo request.PageInfo
-	err := c.ShouldBindJSON(&pageInfo)
+	err := c.BindJSON(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -245,9 +247,9 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 // @Param     data  body      systemReq.SetUserAuth          true  "用户UUID, 角色ID"
 // @Success   200   {object}  response.Response{msg=string}  "设置用户权限"
 // @Router    /user/setUserAuthority [post]
-func (b *BaseApi) SetUserAuthority(c *gin.Context) {
+func (b *BaseApi) SetUserAuthority(ctx context.Context, c *app.RequestContext) {
 	var sua systemReq.SetUserAuth
-	err := c.ShouldBindJSON(&sua)
+	err := c.BindJSON(&sua)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -286,9 +288,9 @@ func (b *BaseApi) SetUserAuthority(c *gin.Context) {
 // @Param     data  body      systemReq.SetUserAuthorities   true  "用户UUID, 角色ID"
 // @Success   200   {object}  response.Response{msg=string}  "设置用户权限"
 // @Router    /user/setUserAuthorities [post]
-func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
+func (b *BaseApi) SetUserAuthorities(ctx context.Context, c *app.RequestContext) {
 	var sua systemReq.SetUserAuthorities
-	err := c.ShouldBindJSON(&sua)
+	err := c.BindJSON(&sua)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -311,9 +313,9 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 // @Param     data  body      request.GetById                true  "用户ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除用户"
 // @Router    /user/deleteUser [delete]
-func (b *BaseApi) DeleteUser(c *gin.Context) {
+func (b *BaseApi) DeleteUser(ctx context.Context, c *app.RequestContext) {
 	var reqId request.GetById
-	err := c.ShouldBindJSON(&reqId)
+	err := c.BindJSON(&reqId)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -346,9 +348,9 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 // @Param     data  body      system.SysUser                                             true  "ID, 用户名, 昵称, 头像链接"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "设置用户信息"
 // @Router    /user/setUserInfo [put]
-func (b *BaseApi) SetUserInfo(c *gin.Context) {
+func (b *BaseApi) SetUserInfo(ctx context.Context, c *app.RequestContext) {
 	var user systemReq.ChangeUserInfo
-	err := c.ShouldBindJSON(&user)
+	err := c.BindJSON(&user)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -395,9 +397,9 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 // @Param     data  body      system.SysUser                                             true  "ID, 用户名, 昵称, 头像链接"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "设置用户信息"
 // @Router    /user/SetSelfInfo [put]
-func (b *BaseApi) SetSelfInfo(c *gin.Context) {
+func (b *BaseApi) SetSelfInfo(ctx context.Context, c *app.RequestContext) {
 	var user systemReq.ChangeUserInfo
-	err := c.ShouldBindJSON(&user)
+	err := c.BindJSON(&user)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -430,7 +432,7 @@ func (b *BaseApi) SetSelfInfo(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=map[string]interface{},msg=string}  "获取用户信息"
 // @Router    /user/getUserInfo [get]
-func (b *BaseApi) GetUserInfo(c *gin.Context) {
+func (b *BaseApi) GetUserInfo(ctx context.Context, c *app.RequestContext) {
 	uuid := utils.GetUserUuid(c)
 	ReqUser, err := userService.GetUserInfo(uuid)
 	if err != nil {
@@ -449,9 +451,9 @@ func (b *BaseApi) GetUserInfo(c *gin.Context) {
 // @Param     data  body      system.SysUser                 true  "ID"
 // @Success   200   {object}  response.Response{msg=string}  "重置用户密码"
 // @Router    /user/resetPassword [post]
-func (b *BaseApi) ResetPassword(c *gin.Context) {
+func (b *BaseApi) ResetPassword(ctx context.Context, c *app.RequestContext) {
 	var user system.SysUser
-	err := c.ShouldBindJSON(&user)
+	err := c.BindJSON(&user)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

@@ -1,9 +1,8 @@
 package response
 
 import (
+	"github.com/cloudwego/hertz/pkg/app"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
@@ -17,7 +16,7 @@ const (
 	SUCCESS = 0
 )
 
-func Result(code int, data interface{}, msg string, c *gin.Context) {
+func Result(code int, data interface{}, msg string, c *app.RequestContext) {
 	// 开始时间
 	c.JSON(http.StatusOK, Response{
 		code,
@@ -26,30 +25,30 @@ func Result(code int, data interface{}, msg string, c *gin.Context) {
 	})
 }
 
-func Ok(c *gin.Context) {
+func Ok(c *app.RequestContext) {
 	Result(SUCCESS, map[string]interface{}{}, "操作成功", c)
 }
 
-func OkWithMessage(message string, c *gin.Context) {
+func OkWithMessage(message string, c *app.RequestContext) {
 	Result(SUCCESS, map[string]interface{}{}, message, c)
 }
 
-func OkWithData(data interface{}, c *gin.Context) {
+func OkWithData(data interface{}, c *app.RequestContext) {
 	Result(SUCCESS, data, "查询成功", c)
 }
 
-func OkWithDetailed(data interface{}, message string, c *gin.Context) {
+func OkWithDetailed(data interface{}, message string, c *app.RequestContext) {
 	Result(SUCCESS, data, message, c)
 }
 
-func Fail(c *gin.Context) {
+func Fail(c *app.RequestContext) {
 	Result(ERROR, map[string]interface{}{}, "操作失败", c)
 }
 
-func FailWithMessage(message string, c *gin.Context) {
+func FailWithMessage(message string, c *app.RequestContext) {
 	Result(ERROR, map[string]interface{}{}, message, c)
 }
 
-func FailWithDetailed(data interface{}, message string, c *gin.Context) {
+func FailWithDetailed(data interface{}, message string, c *app.RequestContext) {
 	Result(ERROR, data, message, c)
 }

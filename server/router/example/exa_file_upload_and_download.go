@@ -1,13 +1,13 @@
 package example
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
-	"github.com/gin-gonic/gin"
 )
 
 type FileUploadAndDownloadRouter struct{}
 
-func (e *FileUploadAndDownloadRouter) InitFileUploadAndDownloadRouter(Router *gin.RouterGroup) {
+func (e *FileUploadAndDownloadRouter) InitFileUploadAndDownloadRouter(Router *route.RouterGroup) {
 	fileUploadAndDownloadRouter := Router.Group("fileUploadAndDownload")
 	exaFileUploadAndDownloadApi := v1.ApiGroupApp.ExampleApiGroup.FileUploadAndDownloadApi
 	{

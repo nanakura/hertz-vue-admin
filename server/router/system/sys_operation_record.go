@@ -1,13 +1,13 @@
 package system
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
-	"github.com/gin-gonic/gin"
 )
 
 type OperationRecordRouter struct{}
 
-func (s *OperationRecordRouter) InitSysOperationRecordRouter(Router *gin.RouterGroup) {
+func (s *OperationRecordRouter) InitSysOperationRecordRouter(Router *route.RouterGroup) {
 	operationRecordRouter := Router.Group("sysOperationRecord")
 	authorityMenuApi := v1.ApiGroupApp.SystemApiGroup.OperationRecordApi
 	{

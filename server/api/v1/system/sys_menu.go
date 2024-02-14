@@ -1,6 +1,8 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -23,7 +25,7 @@ type AuthorityMenuApi struct{}
 // @Param     data  body      request.Empty                                                  true  "空"
 // @Success   200   {object}  response.Response{data=systemRes.SysMenusResponse,msg=string}  "获取用户动态路由,返回包括系统菜单详情列表"
 // @Router    /menu/getMenu [post]
-func (a *AuthorityMenuApi) GetMenu(c *gin.Context) {
+func (a *AuthorityMenuApi) GetMenu(ctx context.Context, c *app.RequestContext) {
 	menus, err := menuService.GetMenuTree(utils.GetUserAuthorityId(c))
 	if err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
@@ -44,7 +46,7 @@ func (a *AuthorityMenuApi) GetMenu(c *gin.Context) {
 // @Param     data  body      request.Empty                                                      true  "空"
 // @Success   200   {object}  response.Response{data=systemRes.SysBaseMenusResponse,msg=string}  "获取用户动态路由,返回包括系统菜单列表"
 // @Router    /menu/getBaseMenuTree [post]
-func (a *AuthorityMenuApi) GetBaseMenuTree(c *gin.Context) {
+func (a *AuthorityMenuApi) GetBaseMenuTree(ctx context.Context, c *app.RequestContext) {
 	menus, err := menuService.GetBaseMenuTree()
 	if err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
@@ -63,9 +65,9 @@ func (a *AuthorityMenuApi) GetBaseMenuTree(c *gin.Context) {
 // @Param     data  body      systemReq.AddMenuAuthorityInfo  true  "角色ID"
 // @Success   200   {object}  response.Response{msg=string}   "增加menu和角色关联关系"
 // @Router    /menu/addMenuAuthority [post]
-func (a *AuthorityMenuApi) AddMenuAuthority(c *gin.Context) {
+func (a *AuthorityMenuApi) AddMenuAuthority(ctx context.Context, c *app.RequestContext) {
 	var authorityMenu systemReq.AddMenuAuthorityInfo
-	err := c.ShouldBindJSON(&authorityMenu)
+	err := c.BindJSON(&authorityMenu)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -91,9 +93,9 @@ func (a *AuthorityMenuApi) AddMenuAuthority(c *gin.Context) {
 // @Param     data  body      request.GetAuthorityId                                     true  "角色ID"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "获取指定角色menu"
 // @Router    /menu/getMenuAuthority [post]
-func (a *AuthorityMenuApi) GetMenuAuthority(c *gin.Context) {
+func (a *AuthorityMenuApi) GetMenuAuthority(ctx context.Context, c *app.RequestContext) {
 	var param request.GetAuthorityId
-	err := c.ShouldBindJSON(&param)
+	err := c.BindJSON(&param)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -121,9 +123,9 @@ func (a *AuthorityMenuApi) GetMenuAuthority(c *gin.Context) {
 // @Param     data  body      system.SysBaseMenu             true  "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success   200   {object}  response.Response{msg=string}  "新增菜单"
 // @Router    /menu/addBaseMenu [post]
-func (a *AuthorityMenuApi) AddBaseMenu(c *gin.Context) {
+func (a *AuthorityMenuApi) AddBaseMenu(ctx context.Context, c *app.RequestContext) {
 	var menu system.SysBaseMenu
-	err := c.ShouldBindJSON(&menu)
+	err := c.BindJSON(&menu)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -156,9 +158,9 @@ func (a *AuthorityMenuApi) AddBaseMenu(c *gin.Context) {
 // @Param     data  body      request.GetById                true  "菜单id"
 // @Success   200   {object}  response.Response{msg=string}  "删除菜单"
 // @Router    /menu/deleteBaseMenu [post]
-func (a *AuthorityMenuApi) DeleteBaseMenu(c *gin.Context) {
+func (a *AuthorityMenuApi) DeleteBaseMenu(ctx context.Context, c *app.RequestContext) {
 	var menu request.GetById
-	err := c.ShouldBindJSON(&menu)
+	err := c.BindJSON(&menu)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -186,9 +188,9 @@ func (a *AuthorityMenuApi) DeleteBaseMenu(c *gin.Context) {
 // @Param     data  body      system.SysBaseMenu             true  "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success   200   {object}  response.Response{msg=string}  "更新菜单"
 // @Router    /menu/updateBaseMenu [post]
-func (a *AuthorityMenuApi) UpdateBaseMenu(c *gin.Context) {
+func (a *AuthorityMenuApi) UpdateBaseMenu(ctx context.Context, c *app.RequestContext) {
 	var menu system.SysBaseMenu
-	err := c.ShouldBindJSON(&menu)
+	err := c.BindJSON(&menu)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -221,9 +223,9 @@ func (a *AuthorityMenuApi) UpdateBaseMenu(c *gin.Context) {
 // @Param     data  body      request.GetById                                                   true  "菜单id"
 // @Success   200   {object}  response.Response{data=systemRes.SysBaseMenuResponse,msg=string}  "根据id获取菜单,返回包括系统菜单列表"
 // @Router    /menu/getBaseMenuById [post]
-func (a *AuthorityMenuApi) GetBaseMenuById(c *gin.Context) {
+func (a *AuthorityMenuApi) GetBaseMenuById(ctx context.Context, c *app.RequestContext) {
 	var idInfo request.GetById
-	err := c.ShouldBindJSON(&idInfo)
+	err := c.BindJSON(&idInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -251,9 +253,9 @@ func (a *AuthorityMenuApi) GetBaseMenuById(c *gin.Context) {
 // @Param     data  body      request.PageInfo                                        true  "页码, 每页大小"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取基础menu列表,返回包括列表,总数,页码,每页数量"
 // @Router    /menu/getMenuList [post]
-func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
+func (a *AuthorityMenuApi) GetMenuList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo request.PageInfo
-	err := c.ShouldBindJSON(&pageInfo)
+	err := c.BindJSON(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

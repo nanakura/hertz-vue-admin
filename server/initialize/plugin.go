@@ -2,22 +2,23 @@ package initialize
 
 import (
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/route"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/email"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils/plugin"
-	"github.com/gin-gonic/gin"
 )
 
-func PluginInit(group *gin.RouterGroup, Plugin ...plugin.Plugin) {
+func PluginInit(group *route.RouterGroup, Plugin ...plugin.Plugin) {
 	for i := range Plugin {
 		PluginGroup := group.Group(Plugin[i].RouterPath())
 		Plugin[i].Register(PluginGroup)
 	}
 }
 
-func InstallPlugin(Router *gin.Engine) {
+func InstallPlugin(Router *server.Hertz) {
 	PublicGroup := Router.Group("")
 	fmt.Println("无鉴权插件安装==》", PublicGroup)
 	PrivateGroup := Router.Group("")

@@ -1,7 +1,9 @@
 package system
 
 import (
+	"context"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -28,9 +30,9 @@ var sysExportTemplateService = service.ServiceGroupApp.SystemServiceGroup.SysExp
 // @Param data body system.SysExportTemplate true "创建导出模板"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /sysExportTemplate/createSysExportTemplate [post]
-func (sysExportTemplateApi *SysExportTemplateApi) CreateSysExportTemplate(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) CreateSysExportTemplate(ctx context.Context, c *app.RequestContext) {
 	var sysExportTemplate system.SysExportTemplate
-	err := c.ShouldBindJSON(&sysExportTemplate)
+	err := c.BindJSON(&sysExportTemplate)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -59,9 +61,9 @@ func (sysExportTemplateApi *SysExportTemplateApi) CreateSysExportTemplate(c *gin
 // @Param data body system.SysExportTemplate true "删除导出模板"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /sysExportTemplate/deleteSysExportTemplate [delete]
-func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplate(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplate(ctx context.Context, c *app.RequestContext) {
 	var sysExportTemplate system.SysExportTemplate
-	err := c.ShouldBindJSON(&sysExportTemplate)
+	err := c.BindJSON(&sysExportTemplate)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -83,9 +85,9 @@ func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplate(c *gin
 // @Param data body request.IdsReq true "批量删除导出模板"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
 // @Router /sysExportTemplate/deleteSysExportTemplateByIds [delete]
-func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplateByIds(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplateByIds(ctx context.Context, c *app.RequestContext) {
 	var IDS request.IdsReq
-	err := c.ShouldBindJSON(&IDS)
+	err := c.BindJSON(&IDS)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -107,9 +109,9 @@ func (sysExportTemplateApi *SysExportTemplateApi) DeleteSysExportTemplateByIds(c
 // @Param data body system.SysExportTemplate true "更新导出模板"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /sysExportTemplate/updateSysExportTemplate [put]
-func (sysExportTemplateApi *SysExportTemplateApi) UpdateSysExportTemplate(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) UpdateSysExportTemplate(ctx context.Context, c *app.RequestContext) {
 	var sysExportTemplate system.SysExportTemplate
-	err := c.ShouldBindJSON(&sysExportTemplate)
+	err := c.BindJSON(&sysExportTemplate)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -138,9 +140,9 @@ func (sysExportTemplateApi *SysExportTemplateApi) UpdateSysExportTemplate(c *gin
 // @Param data query system.SysExportTemplate true "用id查询导出模板"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /sysExportTemplate/findSysExportTemplate [get]
-func (sysExportTemplateApi *SysExportTemplateApi) FindSysExportTemplate(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) FindSysExportTemplate(ctx context.Context, c *app.RequestContext) {
 	var sysExportTemplate system.SysExportTemplate
-	err := c.ShouldBindQuery(&sysExportTemplate)
+	err := c.BindQuery(&sysExportTemplate)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -162,9 +164,9 @@ func (sysExportTemplateApi *SysExportTemplateApi) FindSysExportTemplate(c *gin.C
 // @Param data query systemReq.SysExportTemplateSearch true "分页获取导出模板列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /sysExportTemplate/getSysExportTemplateList [get]
-func (sysExportTemplateApi *SysExportTemplateApi) GetSysExportTemplateList(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) GetSysExportTemplateList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo systemReq.SysExportTemplateSearch
-	err := c.ShouldBindQuery(&pageInfo)
+	err := c.BindQuery(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -189,7 +191,7 @@ func (sysExportTemplateApi *SysExportTemplateApi) GetSysExportTemplateList(c *gi
 // @accept application/json
 // @Produce application/json
 // @Router /sysExportTemplate/exportExcel [get]
-func (sysExportTemplateApi *SysExportTemplateApi) ExportExcel(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) ExportExcel(ctx context.Context, c *app.RequestContext) {
 	templateID := c.Query("templateID")
 	if templateID == "" {
 		response.FailWithMessage("模板ID不能为空", c)
@@ -212,7 +214,7 @@ func (sysExportTemplateApi *SysExportTemplateApi) ExportExcel(c *gin.Context) {
 // @accept application/json
 // @Produce application/json
 // @Router /sysExportTemplate/exportExcel [get]
-func (sysExportTemplateApi *SysExportTemplateApi) ExportTemplate(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) ExportTemplate(ctx context.Context, c *app.RequestContext) {
 	templateID := c.Query("templateID")
 	if templateID == "" {
 		response.FailWithMessage("模板ID不能为空", c)
@@ -235,7 +237,7 @@ func (sysExportTemplateApi *SysExportTemplateApi) ExportTemplate(c *gin.Context)
 // @accept application/json
 // @Produce application/json
 // @Router /sysExportTemplate/importExcel [post]
-func (sysExportTemplateApi *SysExportTemplateApi) ImportExcel(c *gin.Context) {
+func (sysExportTemplateApi *SysExportTemplateApi) ImportExcel(ctx context.Context, c *app.RequestContext) {
 	templateID := c.Query("templateID")
 	if templateID == "" {
 		response.FailWithMessage("模板ID不能为空", c)

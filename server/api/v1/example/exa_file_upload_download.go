@@ -1,12 +1,13 @@
 package example
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	exampleRes "github.com/flipped-aurora/gin-vue-admin/server/model/example/response"
-	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
@@ -21,10 +22,10 @@ type FileUploadAndDownloadApi struct{}
 // @Param     file  formData  file                                                           true  "上传文件示例"
 // @Success   200   {object}  response.Response{data=exampleRes.ExaFileResponse,msg=string}  "上传文件示例,返回包括文件详情"
 // @Router    /fileUploadAndDownload/upload [post]
-func (b *FileUploadAndDownloadApi) UploadFile(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) UploadFile(ctx context.Context, c *app.RequestContext) {
 	var file example.ExaFileUploadAndDownload
 	noSave := c.DefaultQuery("noSave", "0")
-	_, header, err := c.Request.FormFile("file")
+	header, err := c.Request.FormFile("file")
 	if err != nil {
 		global.GVA_LOG.Error("接收文件失败!", zap.Error(err))
 		response.FailWithMessage("接收文件失败", c)
@@ -40,9 +41,9 @@ func (b *FileUploadAndDownloadApi) UploadFile(c *gin.Context) {
 }
 
 // EditFileName 编辑文件名或者备注
-func (b *FileUploadAndDownloadApi) EditFileName(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) EditFileName(ctx context.Context, c *app.RequestContext) {
 	var file example.ExaFileUploadAndDownload
-	err := c.ShouldBindJSON(&file)
+	err := c.BindJSON(&file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -64,9 +65,9 @@ func (b *FileUploadAndDownloadApi) EditFileName(c *gin.Context) {
 // @Param     data  body      example.ExaFileUploadAndDownload  true  "传入文件里面id即可"
 // @Success   200   {object}  response.Response{msg=string}     "删除文件"
 // @Router    /fileUploadAndDownload/deleteFile [post]
-func (b *FileUploadAndDownloadApi) DeleteFile(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) DeleteFile(ctx context.Context, c *app.RequestContext) {
 	var file example.ExaFileUploadAndDownload
-	err := c.ShouldBindJSON(&file)
+	err := c.BindJSON(&file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -88,9 +89,9 @@ func (b *FileUploadAndDownloadApi) DeleteFile(c *gin.Context) {
 // @Param     data  body      request.PageInfo                                        true  "页码, 每页大小"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页文件列表,返回包括列表,总数,页码,每页数量"
 // @Router    /fileUploadAndDownload/getFileList [post]
-func (b *FileUploadAndDownloadApi) GetFileList(c *gin.Context) {
+func (b *FileUploadAndDownloadApi) GetFileList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo request.PageInfo
-	err := c.ShouldBindJSON(&pageInfo)
+	err := c.BindJSON(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

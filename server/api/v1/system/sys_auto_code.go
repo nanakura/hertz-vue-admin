@@ -1,8 +1,10 @@
 package system
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app"
 	"net/url"
 	"os"
 	"strings"
@@ -27,9 +29,9 @@ type AutoCodeApi struct{}
 // @Param     data  body      system.AutoCodeStruct                                      true  "预览创建代码"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "预览创建后的代码"
 // @Router    /autoCode/preview [post]
-func (autoApi *AutoCodeApi) PreviewTemp(c *gin.Context) {
+func (autoApi *AutoCodeApi) PreviewTemp(ctx context.Context, c *app.RequestContext) {
 	var a system.AutoCodeStruct
-	_ = c.ShouldBindJSON(&a)
+	_ = c.BindJSON(&a)
 	if err := utils.Verify(a, utils.AutoCodeVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -54,9 +56,9 @@ func (autoApi *AutoCodeApi) PreviewTemp(c *gin.Context) {
 // @Param     data  body      system.AutoCodeStruct  true  "创建自动代码"
 // @Success   200   {string}  string                 "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router    /autoCode/createTemp [post]
-func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
+func (autoApi *AutoCodeApi) CreateTemp(ctx context.Context, c *app.RequestContext) {
 	var a system.AutoCodeStruct
-	_ = c.ShouldBindJSON(&a)
+	_ = c.BindJSON(&a)
 	if err := utils.Verify(a, utils.AutoCodeVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -66,8 +68,8 @@ func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
 	if a.AutoCreateApiToSql {
 		if ids, err := autoCodeService.AutoCreateApi(&a); err != nil {
 			global.GVA_LOG.Error("自动化创建失败!请自行清空垃圾数据!", zap.Error(err))
-			c.Writer.Header().Add("success", "false")
-			c.Writer.Header().Add("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据!"))
+			c.Header("success", "false")
+			c.Header("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据!"))
 			return
 		} else {
 			apiIds = ids
@@ -77,17 +79,17 @@ func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
 	err := autoCodeService.CreateTemp(a, apiIds...)
 	if err != nil {
 		if errors.Is(err, system.ErrAutoMove) {
-			c.Writer.Header().Add("success", "true")
-			c.Writer.Header().Add("msg", url.QueryEscape(err.Error()))
+			c.Header("success", "true")
+			c.Header("msg", url.QueryEscape(err.Error()))
 		} else {
-			c.Writer.Header().Add("success", "false")
-			c.Writer.Header().Add("msg", url.QueryEscape(err.Error()))
+			c.Header("success", "false")
+			c.Header("msg", url.QueryEscape(err.Error()))
 			_ = os.Remove("./ginvueadmin.zip")
 		}
 	} else {
-		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "ginvueadmin.zip")) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
-		c.Writer.Header().Add("Content-Type", "application/json")
-		c.Writer.Header().Add("success", "true")
+		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "ginvueadmin.zip")) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+		c.Header("Content-Type", "application/json")
+		c.Header("success", "true")
 		c.File("./ginvueadmin.zip")
 		_ = os.Remove("./ginvueadmin.zip")
 	}
@@ -101,7 +103,7 @@ func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=map[string]interface{},msg=string}  "获取当前所有数据库"
 // @Router    /autoCode/getDatabase [get]
-func (autoApi *AutoCodeApi) GetDB(c *gin.Context) {
+func (autoApi *AutoCodeApi) GetDB(ctx context.Context, c *app.RequestContext) {
 	businessDB := c.Query("businessDB")
 	dbs, err := autoCodeService.Database(businessDB).GetDB(businessDB)
 	var dbList []map[string]interface{}
@@ -129,7 +131,7 @@ func (autoApi *AutoCodeApi) GetDB(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=map[string]interface{},msg=string}  "获取当前数据库所有表"
 // @Router    /autoCode/getTables [get]
-func (autoApi *AutoCodeApi) GetTables(c *gin.Context) {
+func (autoApi *AutoCodeApi) GetTables(ctx context.Context, c *app.RequestContext) {
 	dbName := c.DefaultQuery("dbName", global.GVA_CONFIG.Mysql.Dbname)
 	businessDB := c.Query("businessDB")
 	tables, err := autoCodeService.Database(businessDB).GetTables(businessDB, dbName)
@@ -149,7 +151,7 @@ func (autoApi *AutoCodeApi) GetTables(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=map[string]interface{},msg=string}  "获取当前表所有字段"
 // @Router    /autoCode/getColumn [get]
-func (autoApi *AutoCodeApi) GetColumn(c *gin.Context) {
+func (autoApi *AutoCodeApi) GetColumn(ctx context.Context, c *app.RequestContext) {
 	businessDB := c.Query("businessDB")
 	dbName := c.DefaultQuery("dbName", global.GVA_CONFIG.Mysql.Dbname)
 	tableName := c.Query("tableName")
@@ -171,9 +173,9 @@ func (autoApi *AutoCodeApi) GetColumn(c *gin.Context) {
 // @Param     data  body      system.SysAutoCode                                         true  "创建package"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "创建package成功"
 // @Router    /autoCode/createPackage [post]
-func (autoApi *AutoCodeApi) CreatePackage(c *gin.Context) {
+func (autoApi *AutoCodeApi) CreatePackage(ctx context.Context, c *app.RequestContext) {
 	var a system.SysAutoCode
-	_ = c.ShouldBindJSON(&a)
+	_ = c.BindJSON(&a)
 	if err := utils.Verify(a, utils.AutoPackageVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -196,7 +198,7 @@ func (autoApi *AutoCodeApi) CreatePackage(c *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=map[string]interface{},msg=string}  "创建package成功"
 // @Router    /autoCode/getPackage [post]
-func (autoApi *AutoCodeApi) GetPackage(c *gin.Context) {
+func (autoApi *AutoCodeApi) GetPackage(ctx context.Context, c *app.RequestContext) {
 	pkgs, err := autoCodeService.GetPackage()
 	if err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
@@ -215,9 +217,9 @@ func (autoApi *AutoCodeApi) GetPackage(c *gin.Context) {
 // @Param     data  body      system.SysAutoCode                                         true  "创建package"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "删除package成功"
 // @Router    /autoCode/delPackage [post]
-func (autoApi *AutoCodeApi) DelPackage(c *gin.Context) {
+func (autoApi *AutoCodeApi) DelPackage(ctx context.Context, c *app.RequestContext) {
 	var a system.SysAutoCode
-	_ = c.ShouldBindJSON(&a)
+	_ = c.BindJSON(&a)
 	err := autoCodeService.DelPackage(a)
 	if err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
@@ -236,9 +238,9 @@ func (autoApi *AutoCodeApi) DelPackage(c *gin.Context) {
 // @Param     data  body      system.SysAutoCode                                         true  "创建插件模板"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "创建插件模板成功"
 // @Router    /autoCode/createPlug [post]
-func (autoApi *AutoCodeApi) AutoPlug(c *gin.Context) {
+func (autoApi *AutoCodeApi) AutoPlug(ctx context.Context, c *app.RequestContext) {
 	var a system.AutoPlugReq
-	err := c.ShouldBindJSON(&a)
+	err := c.BindJSON(&a)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -263,7 +265,7 @@ func (autoApi *AutoCodeApi) AutoPlug(c *gin.Context) {
 // @Param     plug  formData  file                                              true  "this is a test file"
 // @Success   200   {object}  response.Response{data=[]interface{},msg=string}  "安装插件成功"
 // @Router    /autoCode/installPlugin [post]
-func (autoApi *AutoCodeApi) InstallPlugin(c *gin.Context) {
+func (autoApi *AutoCodeApi) InstallPlugin(ctx context.Context, c *app.RequestContext) {
 	header, err := c.FormFile("plug")
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -302,7 +304,7 @@ func (autoApi *AutoCodeApi) InstallPlugin(c *gin.Context) {
 // @Param     data  body      system.SysAutoCode                                         true  "打包插件"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "打包插件成功"
 // @Router    /autoCode/pubPlug [get]
-func (autoApi *AutoCodeApi) PubPlug(c *gin.Context) {
+func (autoApi *AutoCodeApi) PubPlug(ctx context.Context, c *app.RequestContext) {
 	plugName := c.Query("plugName")
 	zipPath, err := autoCodeService.PubPlug(plugName)
 	if err != nil {

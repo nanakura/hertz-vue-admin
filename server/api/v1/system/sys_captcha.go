@@ -1,12 +1,13 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
-	"github.com/gin-gonic/gin"
 	"github.com/mojocn/base64Captcha"
 	"go.uber.org/zap"
 )
@@ -25,7 +26,7 @@ type BaseApi struct{}
 // @Produce   application/json
 // @Success   200  {object}  response.Response{data=systemRes.SysCaptchaResponse,msg=string}  "生成验证码,返回包括随机数id,base64,验证码长度,是否开启验证码"
 // @Router    /base/captcha [post]
-func (b *BaseApi) Captcha(c *gin.Context) {
+func (b *BaseApi) Captcha(ctx context.Context, c *app.RequestContext) {
 	// 判断验证码是否开启
 	openCaptcha := global.GVA_CONFIG.Captcha.OpenCaptcha               // 是否开启防爆次数
 	openCaptchaTimeOut := global.GVA_CONFIG.Captcha.OpenCaptchaTimeOut // 缓存超时时间

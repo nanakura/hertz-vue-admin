@@ -1,9 +1,9 @@
 package email
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/email/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/email/router"
-	"github.com/gin-gonic/gin"
 )
 
 type emailPlugin struct{}
@@ -19,7 +19,7 @@ func CreateEmailPlug(To, From, Host, Secret, Nickname string, Port int, IsSSL bo
 	return &emailPlugin{}
 }
 
-func (*emailPlugin) Register(group *gin.RouterGroup) {
+func (*emailPlugin) Register(group *route.RouterGroup) {
 	router.RouterGroupApp.InitEmailRouter(group)
 }
 

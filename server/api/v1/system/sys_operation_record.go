@@ -1,6 +1,8 @@
 package system
 
 import (
+	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -22,9 +24,9 @@ type OperationRecordApi struct{}
 // @Param     data  body      system.SysOperationRecord      true  "创建SysOperationRecord"
 // @Success   200   {object}  response.Response{msg=string}  "创建SysOperationRecord"
 // @Router    /sysOperationRecord/createSysOperationRecord [post]
-func (s *OperationRecordApi) CreateSysOperationRecord(c *gin.Context) {
+func (s *OperationRecordApi) CreateSysOperationRecord(ctx context.Context, c *app.RequestContext) {
 	var sysOperationRecord system.SysOperationRecord
-	err := c.ShouldBindJSON(&sysOperationRecord)
+	err := c.BindJSON(&sysOperationRecord)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -47,9 +49,9 @@ func (s *OperationRecordApi) CreateSysOperationRecord(c *gin.Context) {
 // @Param     data  body      system.SysOperationRecord      true  "SysOperationRecord模型"
 // @Success   200   {object}  response.Response{msg=string}  "删除SysOperationRecord"
 // @Router    /sysOperationRecord/deleteSysOperationRecord [delete]
-func (s *OperationRecordApi) DeleteSysOperationRecord(c *gin.Context) {
+func (s *OperationRecordApi) DeleteSysOperationRecord(ctx context.Context, c *app.RequestContext) {
 	var sysOperationRecord system.SysOperationRecord
-	err := c.ShouldBindJSON(&sysOperationRecord)
+	err := c.BindJSON(&sysOperationRecord)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -72,9 +74,9 @@ func (s *OperationRecordApi) DeleteSysOperationRecord(c *gin.Context) {
 // @Param     data  body      request.IdsReq                 true  "批量删除SysOperationRecord"
 // @Success   200   {object}  response.Response{msg=string}  "批量删除SysOperationRecord"
 // @Router    /sysOperationRecord/deleteSysOperationRecordByIds [delete]
-func (s *OperationRecordApi) DeleteSysOperationRecordByIds(c *gin.Context) {
+func (s *OperationRecordApi) DeleteSysOperationRecordByIds(ctx context.Context, c *app.RequestContext) {
 	var IDS request.IdsReq
-	err := c.ShouldBindJSON(&IDS)
+	err := c.BindJSON(&IDS)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -97,9 +99,9 @@ func (s *OperationRecordApi) DeleteSysOperationRecordByIds(c *gin.Context) {
 // @Param     data  query     system.SysOperationRecord                                  true  "Id"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "用id查询SysOperationRecord"
 // @Router    /sysOperationRecord/findSysOperationRecord [get]
-func (s *OperationRecordApi) FindSysOperationRecord(c *gin.Context) {
+func (s *OperationRecordApi) FindSysOperationRecord(ctx context.Context, c *app.RequestContext) {
 	var sysOperationRecord system.SysOperationRecord
-	err := c.ShouldBindQuery(&sysOperationRecord)
+	err := c.BindQuery(&sysOperationRecord)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -127,9 +129,9 @@ func (s *OperationRecordApi) FindSysOperationRecord(c *gin.Context) {
 // @Param     data  query     request.SysOperationRecordSearch                        true  "页码, 每页大小, 搜索条件"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取SysOperationRecord列表,返回包括列表,总数,页码,每页数量"
 // @Router    /sysOperationRecord/getSysOperationRecordList [get]
-func (s *OperationRecordApi) GetSysOperationRecordList(c *gin.Context) {
+func (s *OperationRecordApi) GetSysOperationRecordList(ctx context.Context, c *app.RequestContext) {
 	var pageInfo systemReq.SysOperationRecordSearch
-	err := c.ShouldBindQuery(&pageInfo)
+	err := c.BindQuery(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
