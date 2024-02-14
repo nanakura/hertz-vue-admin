@@ -1,16 +1,16 @@
 package {{.Package}}
 
 import (
+	"github.com/cloudwego/hertz/pkg/route"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
-	"github.com/gin-gonic/gin"
 )
 
 type {{.StructName}}Router struct {
 }
 
 // Init{{.StructName}}Router 初始化 {{.Description}} 路由信息
-func (s *{{.StructName}}Router) Init{{.StructName}}Router(Router *gin.RouterGroup) {
+func (s *{{.StructName}}Router) Init{{.StructName}}Router(Router *route.RouterGroup) {
 	{{.Abbreviation}}Router := Router.Group("{{.Abbreviation}}").Use(middleware.OperationRecord())
 	{{.Abbreviation}}RouterWithoutRecord := Router.Group("{{.Abbreviation}}")
 	var {{.Abbreviation}}Api = v1.ApiGroupApp.{{.PackageT}}ApiGroup.{{.StructName}}Api

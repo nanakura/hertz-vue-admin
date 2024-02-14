@@ -11,7 +11,6 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
 	"github.com/flipped-aurora/gin-vue-admin/server/router"
-	"github.com/gin-gonic/gin"
 	"github.com/hertz-contrib/swagger"
 	swaggerFiles "github.com/swaggo/files"
 	"net/http"
@@ -42,7 +41,7 @@ func Routers() *server.Hertz {
 
 	// 设置为发布模式
 	if global.GVA_CONFIG.System.Env == "public" {
-		gin.SetMode(gin.ReleaseMode) //DebugMode ReleaseMode TestMode
+		//gin.SetMode(gin.ReleaseMode) //DebugMode ReleaseMode TestMode
 	}
 
 	address := fmt.Sprintf(":%d", global.GVA_CONFIG.System.Addr)
